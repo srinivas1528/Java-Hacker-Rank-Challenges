@@ -9,7 +9,6 @@ class Sports{
         System.out.println( "Each team has n players in " + getName() );
     }
 }
-
 class Soccer extends Sports{
     @Override
     String getName(){
@@ -21,10 +20,7 @@ class Soccer extends Sports{
      void getNumberOfTeamMembers(){
         System.out.println("Each team has 11 players in " + getName() );
     }
-    
-    
-    
-    
+
     }
 
 public class Solution{
