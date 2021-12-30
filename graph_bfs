@@ -1,0 +1,128 @@
+import java.io.*;
+import java.math.*;
+import java.security.*;
+import java.text.*;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.regex.*;
+
+
+
+class Result {
+    /*
+     * Complete the 'bfs' function below.
+     *
+     * The function is expected to return a STRING.
+     * The function accepts following parameters:
+     *  1. Vertex origin
+     */
+    
+    /*
+     * For your reference:
+     *
+     * Vertex {
+     *     Character id;
+     *     List<Vertex> edges;
+     * }
+     *
+     */
+
+    public static String bfs(Vertex origin) {
+        // Write your code here
+        String result = "";
+        Set<Vertex> visited = new HashSet<>();
+        
+        Queue<Vertex> queue = new LinkedList<>();
+        
+        List<Vertex> neighbours;
+        
+        Vertex current; 
+    
+        queue.add(origin);
+        visited.add(origin);
+        
+        while(queue.size() > 0) {
+            
+            current = queue.poll();
+            // get current vertex neighours 
+            neighbours = current.edges;
+            
+            // add and mark neighbours to the queue if unvisited
+            for(int i =0; i < neighbours.size(); i++) {
+              Vertex neighbour = neighbours.get(i);
+              if(!visited.contains(neighbour)) {
+                queue.add(neighbour);
+                visited.add(neighbour);
+              }
+            }            
+            result += String.valueOf(current.id);
+                    
+        }
+        
+        
+        return result;
+        
+
+    }
+
+}
+
+// DO NOT EDIT
+// Vertex class
+class Vertex {
+    public Character id;
+    public List<Vertex> edges;
+
+    public Vertex(Character id) {
+        this.id = id;
+        this.edges = new ArrayList<Vertex>();
+    }
+}
+
+public class Solution {
+    
+    // DO NOT EDIT
+    // generate graph from int and array of arrays
+    public static Vertex deserialize(String vertices, List<String> edges){
+        Map<Character, Vertex> container = new HashMap<>();
+        for (Integer i = 0; i < vertices.length(); i++) {
+            container.put(vertices.charAt(i), new Vertex(vertices.charAt(i)));
+        }
+        Character v1;
+        Character v2;
+        for (int i = 0; i < edges.size(); i++) {
+            String edge = edges.get(i);
+            v1 = edge.charAt(0);
+            v2 = edge.charAt(1);
+            container.get(v1).edges.add(container.get(v2));
+            container.get(v2).edges.add(container.get(v1));
+        }
+        return container.get(vertices.charAt(0));
+    }
+    
+    public static void main(String[] args) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(System.getenv("OUTPUT_PATH")));
+
+        String vertices = bufferedReader.readLine();
+
+        int edgesCount = Integer.parseInt(bufferedReader.readLine().trim());
+
+        List<String> edges = new ArrayList<>();
+
+        for (int i = 0; i < edgesCount; i++) {
+            String edgesItem = bufferedReader.readLine();
+            edges.add(edgesItem);
+        }
+
+        Vertex origin = deserialize(vertices, edges);
+        
+        String result = Result.bfs(origin);
+
+        bufferedWriter.write(result);
+        bufferedWriter.newLine();
+
+        bufferedReader.close();
+        bufferedWriter.close();
+    }
+}
