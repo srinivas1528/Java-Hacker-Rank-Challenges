@@ -1,0 +1,164 @@
+
+import java.io.*;
+import java.math.*;
+import java.security.*;
+import java.text.*;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.regex.*;
+
+
+
+class Result {
+
+    /*
+     * Complete the 'find_all_paths' function below.
+     *
+     * The function is expected to return a STRING_ARRAY.
+     * The function accepts following parameters:
+     *  1. Vertex origin
+     *  2. Character destination
+     */
+    
+    /*
+     * For your reference:
+     *
+     * Vertex {
+     *     Character id;
+     *     List<Vertex> edges;
+     * }
+     *
+     */   
+    
+    static Set<Vertex> visited  = new HashSet<>();
+    static List<List<Character>> result = new ArrayList<>();
+    static List<Character> path = new ArrayList<>();
+    
+    public static List<String> find_all_paths(Vertex origin, Character dest) {
+        // Write your code here
+        // will do dfs with recursively 
+        // the catch is backtracking the current by removing visited vertex from set to get new unique paths
+        // and also backtrack path to get new unique paths
+
+        path.add(origin.id);
+        
+        dfsRecurse(origin, dest);
+
+        // typecast from result to string
+        List<String> resultListString = new ArrayList<>();
+        for(int i = 0; i < result.size(); i++) {
+            String builder = "";
+            for(Character c: result.get(i)) {
+                builder += String.valueOf(c);     
+            }
+            resultListString.add(builder);
+        }     
+        return resultListString;       
+
+    }
+    
+    public static void dfsRecurse(Vertex current, Character dest) {
+            
+        if(current.id == dest) {
+            result.add(new ArrayList<>(path));    // caution: new object to be created; otherwise the results will get starting vertex
+            return;
+        }
+        
+        visited.add(current);
+        // typical dfs
+        // do operations on current
+        // get neighbors and go on recurse the first neighbour it sees
+        List<Vertex> neighbors= current.edges;
+        
+        for(int i =0;  i < neighbors.size(); i++) {
+            
+            if(visited.contains(neighbors.get(i))) {
+                continue;
+            }
+           
+           path.add(neighbors.get(i).id); 
+           dfsRecurse(neighbors.get(i), dest);
+           path.remove(neighbors.get(i).id);
+           
+        }
+        
+        // backtrack
+        visited.remove(current);
+     
+    }
+
+}
+
+// DO NOT EDIT
+// Vertex class
+class Vertex {
+    public Character id;
+    public List<Vertex> edges;
+
+    public Vertex(Character id) {
+        this.id = id;
+        this.edges = new ArrayList<Vertex>();
+    }
+}
+
+public class Solution {
+    
+    // DO NOT EDIT
+    // generate graph from int and array of arrays
+    public static Vertex deserialize(String vertices, List<String> edges){
+        Map<Character, Vertex> container = new HashMap<>();
+        for (Integer i = 0; i < vertices.length(); i++) {
+            container.put(vertices.charAt(i), new Vertex(vertices.charAt(i)));
+        }
+        Character v1;
+        Character v2;
+        for (int i = 0; i < edges.size(); i++) {
+            String edge = edges.get(i);
+            v1 = edge.charAt(0);
+            v2 = edge.charAt(1);
+            container.get(v1).edges.add(container.get(v2));
+            container.get(v2).edges.add(container.get(v1));
+        }
+        return container.get(vertices.charAt(0));
+    }
+    
+    public static void main(String[] args) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(System.getenv("OUTPUT_PATH")));
+
+        String vertices = bufferedReader.readLine();
+
+        int edgesCount = Integer.parseInt(bufferedReader.readLine().trim());
+
+        List<String> edges = new ArrayList<>();
+
+        for (int i = 0; i < edgesCount; i++) {
+            String edgesItem = bufferedReader.readLine();
+            edges.add(edgesItem);
+        }
+
+        String destination = bufferedReader.readLine();
+        Character dest;
+        if(destination.length()==0) dest = null;
+        else dest = destination.charAt(0);
+        
+        Vertex origin = deserialize(vertices, edges);
+
+        List<String> result = Result.find_all_paths(origin, dest);
+        
+        Collections.sort(result);
+
+        for (int i = 0; i < result.size(); i++) {
+            bufferedWriter.write(result.get(i));
+
+            if (i != result.size() - 1) {
+                bufferedWriter.write("\n");
+            }
+        }
+
+        bufferedWriter.newLine();
+
+        bufferedReader.close();
+        bufferedWriter.close();
+    }
+}
