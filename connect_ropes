@@ -1,0 +1,75 @@
+/*
+
+260 - Connect N Ropes with Minimum Cost
+Given n ropes of different lengths represented by an array of integers, connect them all into a single rope in a way that minimizes the cost of connecting them.
+
+The cost of connecting two ropes is equal to sum of their lengths. We want to minimize the cost of connecting all the ropes.
+
+Input: ropes, [Integer]
+Output: Integer
+Example
+In: [4, 3, 2, 6]
+Out: 29
+
+
+
+Explanation:
+
+First we connect 3 + 2 = 5, giving the following ropes: [4,5,6]
+Then we connect 5 + 4 = 9, giving the following ropes: [9,6]
+Then we connect 9 + 6 = 15, giving the final combination of all ropes: [15]
+
+So in total the cost for the most efficient approach is: 5 + 9 + 15 = 29
+
+A less efficient way would be:
+
+First we connect 4 + 6 = 10, giving the following ropes: [10,3,2]
+Then we connect 10 + 3 = 13, giving the following ropes: [13,2]
+Then we connect 13 + 2 = 15, giving the final combination of all ropes: [15]
+
+So in total the cost for the less efficient approach is: 10 + 13 + 15 = 38
+
+Although in both cases we need to make the same number of connections, the costs are different
+
+*/
+
+import java.util.*;
+
+class Main {
+
+    public static int mergeRopes(int[] ropes) {
+        
+        // use priority heap as to maintain heap priority
+        // always want less value cost element.
+        
+        // get 2 values and add back the cost values to Prirotiy queue again
+        // repeat till Priority queue until size is 1.
+        
+        int cost = 0;
+        
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
+        
+        for(int rope : ropes) {
+            pq.add(rope);
+        }
+        
+        
+        // get or extract 2 mins
+        while(pq.size() > 1) {
+            int rope1 = pq.poll();
+            int rope2 = pq.poll();
+            cost += rope1 + rope2;
+            pq.add(rope1+rope2);
+            
+        }
+        return cost;
+    }
+
+
+  public static void main(String[] args) {
+    int arr[] = {4, 3, 2, 6};
+
+    int cost = mergeRopes(arr);
+    System.out.println(cost);
+  }
+}
