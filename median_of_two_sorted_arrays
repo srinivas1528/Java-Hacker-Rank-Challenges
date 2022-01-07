@@ -1,0 +1,120 @@
+// 403 - Median of Two Sorted Arrays
+
+// Prompt: Given two sorted arrays of integers of the same length, determine the median of the combined sorted array.
+
+// Def of Median - The median of an array of sorted numbers corresponds to the middle element, if the array has an odd number of elements, and the average of the two middle elements if the array has an even number of elements.
+
+                    
+// Input:  	[1, 12, 13, 26, 38], [2, 15, 17, 30, 45]
+// Output:	16
+// (because the median of [1, 2, 12, 13, 15, 17, 26, 30, 38, 45] equals 16)
+
+// Time Complexity: (Intermediate) O(N), (Advanced) O(log(N))
+// Auxiliary Space Complexity: O(1).
+
+
+// [1, 12, 13, 26, 38]   n = 5
+//          2
+
+// solution 
+// brute force: combine 2 arrays and then sorting.  Later find median
+// time : O(nlogn)
+
+
+
+// second approach : 2 pointer
+
+// n = 10
+
+// Pseudo code
+// when I meet  (i+j) becomes length of any 1 array
+// then I would return arr[i] or arr[j] --> if n is odd
+// otherwise I would return avg of arr[i] and arr[j]  --> if n is even
+
+
+// if(arr[i] > arr[j]) 
+//  then increment j;
+
+// if (arr[i] <= arr[j]) {
+// then  increment i;
+
+/*
+i = 0  1  1  2   3           3
+j = 0  0  1  1   1           2     
+              lower(3,1)  lower (3,2)
+(15 + 17) /2  =  16  
+
+i = 4
+j = 1,2
+                         i                     
+// Input:  	[1, 12, 13, 26, 38], [2, 15, 17, 30, 45]
+                                         j
+
+
+*/
+class Main {
+
+  public static int  median(int arr1[], int arr2[]) {
+
+      int i = 0;
+      int j = 0;
+
+      int n = arr1.length + arr2.length;
+
+      int  mid = n/2;
+
+      int temp = 0;
+
+      while ((i + j) <= mid) {
+
+        // if n is odd and we have reached the middle
+        if ( n% 2 != 0   &&  mid == (i+j) ) {
+          if (arr1[i] < arr2[j]) {
+            return arr1[i]; 
+          } else {
+            return arr2[j]; 
+          }
+        }
+
+      // if n is even and we have reached the middle 
+      // 2 cases more here
+      // compute the first lower value element of the avg case
+        if ( n% 2 == 0  &&  mid-1 == i+j) {
+          // System.out.println("Test");
+            if (arr1[i] < arr2[j]) {
+            temp = arr1[i]; 
+          } else {
+            temp = arr2[j]; 
+          }
+        }
+        // compute  and return the values of avg
+        if ( n% 2 == 0  &&  mid == (i+j) ) {
+          if (arr1[i] < arr2[j]) {
+            return (arr1[i] + temp) /2; 
+          } else {
+            return (arr2[j] + temp) / 2; 
+          }
+        }
+
+
+        // traversing the 2 arrays for getting to next bigger value
+        if(arr1[i] <= arr2[j]) {
+            i++;
+        } else {
+          j++;
+        }
+      }
+
+      return 0;
+
+  }
+
+
+
+  public static void main(String[] args) {
+    int[] arr1 =  {1, 12, 13, 26, 38};
+    int[] arr2 = {2, 15, 17, 30, 45};
+    int median = median(arr1, arr2);
+    System.out.println(median);
+  }
+}
